@@ -1,0 +1,18 @@
+- Ran this on my openSUSE machine, running 5.14.21-150400.24.88, with
+  kernel sources present.
+
+- __x64_sys_execve seems to be the entry point for the system call,
+  but it was hard to find where that function actually lives.
+
+- The trace shows it calls do_execveat_common.isra.42 - not sure what
+  isra.42 is about, but do_execveat_common at least lives in fs/exec.c.
+
+- do_execveat_common seems to:
+    - allocate and initialise a linux_bprm structure on the heap,
+    - do some validation of number of command line arguments and (I guess)
+      environment variables less than some max,
+    - copy arguments and environment variable strings to the new process'
+      stack (copy_strings) and
+    - call bprm_execve to start executing the program.
+
+   
